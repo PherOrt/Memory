@@ -49,6 +49,18 @@ public class GamePlay : MonoBehaviour
     public GameObject Spot28;
     public GameObject Spot29;
     public GameObject Spot30;
+
+//---------------------Achievements-----------------------
+    public GameObject AchievementUnlocked;
+    public GameObject AchievementUnlockedEasy;
+    public GameObject AchievementUnlockedEasyx5;
+    public GameObject AchievementUnlockedEasyx15;
+    public GameObject AchievementUnlockedNormal;
+    public GameObject AchievementUnlockedNormalx5;
+    public GameObject AchievementUnlockedNormalx15;
+    public GameObject AchievementUnlockedHard;
+    public GameObject AchievementUnlockedHardx5;
+    public GameObject AchievementUnlockedHardx15;
 //---------------------Cards in Deck----------------------
     public GameObject Card1;
     public GameObject Card1Match;
@@ -112,6 +124,8 @@ public class GamePlay : MonoBehaviour
 
     void Start()
     {
+        AchievementUnlocked = GameObject.Find("AchievementUnlocked");
+
         Spot1  = GameObject.Find("CardSpot1");
         Spot2  = GameObject.Find("CardSpot2");
         Spot3  = GameObject.Find("CardSpot3");
@@ -307,73 +321,174 @@ public class GamePlay : MonoBehaviour
             NewBoard(randomdeckhard,spots);
         }
     }
-
+    
     IEnumerator displayDelay(){
 
         if((First.name ) == (Second.name + "Match") || (First.name + "Match") == (Second.name)){ //Compares the names of the two selected card names if they match player waits 5 seconds. Then 1 point is added to the score and cards are destroyed.
-            Count = 0;
+        //Multiplayer Mode
+            if(SceneManager.GetActiveScene().name == "MainGame(multiplayer)")
+                {
+                Count = 0;
             
-            yield return new WaitForSeconds(.3f); //  .3f equals 3 tenths of a second.
-            Points = Points + 1;
-            matchStreak = matchStreak + 1;
+                yield return new WaitForSeconds(.6f); //  .3f equals 3 tenths of a second.
+                Points = Points + 1;
+                matchStreak = matchStreak + 1;
 
-            if(longestStreak<matchStreak){
-                longestStreak = matchStreak;
-                CurrentLongestStreak.GetComponent<UnityEngine.UI.Text>().text = longestStreak.ToString();
-            }
+                if(longestStreak<matchStreak){
+                    longestStreak = matchStreak;
+                    CurrentLongestStreak.GetComponent<UnityEngine.UI.Text>().text = longestStreak.ToString();
+                }
 
-            Debug.Log("Points = " + Points);
-            Destroy(First);
-            Destroy(Second);
-            score.GetComponent<UnityEngine.UI.Text>().text = Points.ToString();
-            streak.GetComponent<UnityEngine.UI.Text>().text = matchStreak.ToString();
-            paused = false;
-
-            if(Points == 15 && SceneManager.GetActiveScene().name == "MainGame(hard)"){
-                Points = 0;
-                matchStreak = 0;
+                Debug.Log("Points = " + Points);
+                Destroy(First);
+                Destroy(Second);
                 score.GetComponent<UnityEngine.UI.Text>().text = Points.ToString();
                 streak.GetComponent<UnityEngine.UI.Text>().text = matchStreak.ToString();
-                SavedInformation.totalgamesPlayed = SavedInformation.totalgamesPlayed + 1;
-                SavedInformation.totalgamesPlayedHard = SavedInformation.totalgamesPlayedHard + 1;
-                SavedInformation.completedHard = true;
-                DataPersistenceManager.gamesaved = true;
-                randomdeckhard = RandomizedDeck(randomdeckhard, randomdeckhard.Count);
-                NewBoard(randomdeckhard, spots);
-            }
-            if(Points == 10 && SceneManager.GetActiveScene().name == "MainGame(normal)"){
-                Points = 0;
-                matchStreak = 0;
+                paused = false;
+                }
+            else //Single player mode
+                {
+                Count = 0;
+                
+                yield return new WaitForSeconds(.6f); //  .3f equals 3 tenths of a second.
+                Points = Points + 1;
+                matchStreak = matchStreak + 1;
+
+                if(longestStreak<matchStreak){
+                    longestStreak = matchStreak;
+                    CurrentLongestStreak.GetComponent<UnityEngine.UI.Text>().text = longestStreak.ToString();
+                }
+
+                Debug.Log("Points = " + Points);
+                Destroy(First);
+                Destroy(Second);
                 score.GetComponent<UnityEngine.UI.Text>().text = Points.ToString();
                 streak.GetComponent<UnityEngine.UI.Text>().text = matchStreak.ToString();
-                SavedInformation.totalgamesPlayed = SavedInformation.totalgamesPlayed + 1;
-                SavedInformation.totalgamesPlayedNormal = SavedInformation.totalgamesPlayedNormal + 1;
-                SavedInformation.completedNormal = true;
-                DataPersistenceManager.gamesaved = true;
-                //Debug.Log("Completed Normal = " + SavedInformation.completedNormal); //<-------------------DebugLog
-                randomdecknormal = RandomizedDeck(randomdecknormal, randomdecknormal.Count);
-                NewBoard(randomdecknormal, spots);
-            }
-            if(Points == 6 && SceneManager.GetActiveScene().name == "MainGame(easy)"){
-                Points = 0;
-                matchStreak = 0;
-                score.GetComponent<UnityEngine.UI.Text>().text = Points.ToString();
-                streak.GetComponent<UnityEngine.UI.Text>().text = matchStreak.ToString();
-                SavedInformation.totalgamesPlayed = SavedInformation.totalgamesPlayed + 1;
-                SavedInformation.totalgamesPlayedEasy = SavedInformation.totalgamesPlayedEasy + 1;
-                SavedInformation.completedEasy = true;
-                DataPersistenceManager.gamesaved = true;
-                //Debug.Log("Saved Game = " + DataPersistenceManager.gamesaved);
-                //Debug.Log("Total Games Played = " + SavedInformation.totalgamesPlayed);
-                randomdeckeasy = RandomizedDeck(randomdeckeasy, randomdeckeasy.Count);
-                NewBoard(randomdeckeasy, spots);
+                paused = false;
+
+                if(Points == 15 && SceneManager.GetActiveScene().name == "MainGame(hard)"){
+                    Points = 0;
+                    matchStreak = 0;
+                    score.GetComponent<UnityEngine.UI.Text>().text = Points.ToString();
+                    streak.GetComponent<UnityEngine.UI.Text>().text = matchStreak.ToString();
+                    SavedInformation.totalgamesPlayed = SavedInformation.totalgamesPlayed + 1;
+                    SavedInformation.totalgamesPlayedHard = SavedInformation.totalgamesPlayedHard + 1;
+                    SavedInformation.completedHard = true;
+                    DataPersistenceManager.gamesaved = true;
+                    randomdeckhard = RandomizedDeck(randomdeckhard, randomdeckhard.Count);
+                    NewBoard(randomdeckhard, spots);
+                }
+                if(Points == 10 && SceneManager.GetActiveScene().name == "MainGame(normal)"){
+                    Points = 0;
+                    matchStreak = 0;
+                    score.GetComponent<UnityEngine.UI.Text>().text = Points.ToString();
+                    streak.GetComponent<UnityEngine.UI.Text>().text = matchStreak.ToString();
+                    SavedInformation.totalgamesPlayed = SavedInformation.totalgamesPlayed + 1;
+                    SavedInformation.totalgamesPlayedNormal = SavedInformation.totalgamesPlayedNormal + 1;
+                    SavedInformation.completedNormal = true;
+                    DataPersistenceManager.gamesaved = true;
+                    //Debug.Log("Completed Normal = " + SavedInformation.completedNormal); //<-------------------DebugLog
+                    randomdecknormal = RandomizedDeck(randomdecknormal, randomdecknormal.Count);
+                    NewBoard(randomdecknormal, spots);
+                }
+                if(Points == 6 && SceneManager.GetActiveScene().name == "MainGame(easy)"){
+                    Points = 0;
+                    matchStreak = 0;
+                    score.GetComponent<UnityEngine.UI.Text>().text = Points.ToString();
+                    streak.GetComponent<UnityEngine.UI.Text>().text = matchStreak.ToString();
+                    SavedInformation.totalgamesPlayed = SavedInformation.totalgamesPlayed + 1;
+                    SavedInformation.totalgamesPlayedEasy = SavedInformation.totalgamesPlayedEasy + 1;
+                    //--------------------Achievement Unlocked Pop-up--------------------------------------------------------
+                        if(SavedInformation.completedEasy == false && SceneManager.GetActiveScene().name == "MainGame(easy)")
+                        {
+                                GameObject achievement = Instantiate(AchievementUnlockedEasy, new Vector3(0, 0, 0), Quaternion.identity);
+                                achievement.name = achievement.name.Replace("(Clone)","");
+                                achievement.transform.SetParent(AchievementUnlocked.transform,false);
+                                yield return new WaitForSeconds(1);
+                                Destroy(achievement);
+                        }
+                        if(SavedInformation.completedNormal == false && SceneManager.GetActiveScene().name == "MainGame(normal)")
+                        {
+                                GameObject achievement = Instantiate(AchievementUnlockedNormal, new Vector3(0, 0, 0), Quaternion.identity);
+                                achievement.name = achievement.name.Replace("(Clone)","");
+                                achievement.transform.SetParent(AchievementUnlocked.transform,false);
+                                yield return new WaitForSeconds(1);
+                                Destroy(achievement);
+                        }
+                        if(SavedInformation.completedHard == false && SceneManager.GetActiveScene().name == "MainGame(hard)")
+                        {
+                                GameObject achievement = Instantiate(AchievementUnlockedHard, new Vector3(0, 0, 0), Quaternion.identity);
+                                achievement.name = achievement.name.Replace("(Clone)","");
+                                achievement.transform.SetParent(AchievementUnlocked.transform,false);
+                                yield return new WaitForSeconds(1);
+                                Destroy(achievement);
+                        }
+                        if(SavedInformation.totalgamesPlayedEasy == 5 && SceneManager.GetActiveScene().name == "MainGame(easy)")
+                        {
+                            GameObject achievement = Instantiate(AchievementUnlockedEasyx5, new Vector3(0, 0, 0), Quaternion.identity);
+                                achievement.name = achievement.name.Replace("(Clone)","");
+                                achievement.transform.SetParent(AchievementUnlocked.transform,false);
+                                yield return new WaitForSeconds(1);
+                                Destroy(achievement);
+                        }
+                        if(SavedInformation.totalgamesPlayedNormal == 5 && SceneManager.GetActiveScene().name == "MainGame(normal)")
+                        {
+                            GameObject achievement = Instantiate(AchievementUnlockedNormalx5, new Vector3(0, 0, 0), Quaternion.identity);
+                                achievement.name = achievement.name.Replace("(Clone)","");
+                                achievement.transform.SetParent(AchievementUnlocked.transform,false);
+                                yield return new WaitForSeconds(1);
+                                Destroy(achievement);
+                        }
+                        if(SavedInformation.totalgamesPlayedHard == 5 && SceneManager.GetActiveScene().name == "MainGame(hard)")
+                        {
+                            GameObject achievement = Instantiate(AchievementUnlockedHardx5, new Vector3(0, 0, 0), Quaternion.identity);
+                                achievement.name = achievement.name.Replace("(Clone)","");
+                                achievement.transform.SetParent(AchievementUnlocked.transform,false);
+                                yield return new WaitForSeconds(1);
+                                Destroy(achievement);
+                        }
+                        
+                        if(SavedInformation.totalgamesPlayedEasy == 15 && SceneManager.GetActiveScene().name == "MainGame(easy)")
+                        {
+                            GameObject achievement = Instantiate(AchievementUnlockedEasyx15, new Vector3(0, 0, 0), Quaternion.identity);
+                                achievement.name = achievement.name.Replace("(Clone)","");
+                                achievement.transform.SetParent(AchievementUnlocked.transform,false);
+                                yield return new WaitForSeconds(1);
+                                Destroy(achievement);
+                        }
+                        
+                        if(SavedInformation.totalgamesPlayedNormal == 15 && SceneManager.GetActiveScene().name == "MainGame(normal)")
+                        {
+                            GameObject achievement = Instantiate(AchievementUnlockedNormalx15, new Vector3(0, 0, 0), Quaternion.identity);
+                                achievement.name = achievement.name.Replace("(Clone)","");
+                                achievement.transform.SetParent(AchievementUnlocked.transform,false);
+                                yield return new WaitForSeconds(1);
+                                Destroy(achievement);
+                        }
+                        if(SavedInformation.totalgamesPlayedHard == 15 && SceneManager.GetActiveScene().name == "MainGame(hard)")
+                        {
+                            GameObject achievement = Instantiate(AchievementUnlockedHardx15, new Vector3(0, 0, 0), Quaternion.identity);
+                                achievement.name = achievement.name.Replace("(Clone)","");
+                                achievement.transform.SetParent(AchievementUnlocked.transform,false);
+                                yield return new WaitForSeconds(1);
+                                Destroy(achievement);
+                        }
+
+                    //-------------------------------------------------------------------------------------------------------
+                    SavedInformation.completedEasy = true;
+                    DataPersistenceManager.gamesaved = true;
+                    //Debug.Log("Saved Game = " + DataPersistenceManager.gamesaved);
+                    //Debug.Log("Total Games Played = " + SavedInformation.totalgamesPlayed);
+                    randomdeckeasy = RandomizedDeck(randomdeckeasy, randomdeckeasy.Count);
+                    NewBoard(randomdeckeasy, spots);
+                    }
             }
             
         }
-        else //If card names do not match player waits 5 seconds and the cards will change back face down.
+        else //If card names do not match player waits and the cards will change back face down.
         {
             Count = 0;
-            yield return new WaitForSeconds(.3f); //  .3f equals 3 tenths of a second.
+            yield return new WaitForSeconds(.6f); //  .3f equals 3 tenths of a second.
 
             First.GetComponent<Image>().sprite = CardFlip.CardBack;
             Second.GetComponent<Image>().sprite = CardFlip.CardBack;
